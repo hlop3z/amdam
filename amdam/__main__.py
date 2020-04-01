@@ -39,9 +39,14 @@ if __name__ == '__main__':
     APP_PATH = Path(ROOT_PATH).parent
     PID = None
 
+    THE_OS = api.pyll.get_os()
+    if THE_OS == 'windows':
+        asyncio.set_event_loop_policy(
+            asyncio.WindowsProactorEventLoopPolicy()
+        )        
 
     def set_os():
-        if api.pyll.get_os() == 'linux':
+        if THE_OS == 'linux':
             with open(f'{ ROOT_PATH }/static/settings.js', 'w+') as file:
                 file.write( 'const isLinux = true;' )
         else:
