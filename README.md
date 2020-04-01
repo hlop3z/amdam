@@ -5,5 +5,5 @@
 ### Installing
 
 ```
-python3.7 -m pip install https://github.com/hlop3z/amdam/dist/amdam-0.0.1.tar.gz
+python -m pip install https://github.com/hlop3z/amdam/raw/master/dist/amdam-0.0.1.tar.gz
 ```

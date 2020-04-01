@@ -19,6 +19,15 @@ setuptools.setup(
     url                             = "https://github.com/hlop3z/amdam",
     packages                        = setuptools.find_packages(exclude=(".git",)),
     include_package_data            = True,
+    install_requires = [
+        "aiofile>=0.20.1",
+        "Quart>=0.11.3",
+        "Quart-CORS>=0.3.0",
+        "sanic>=9.6.2",
+        "sanic_cors>=0.9.8",
+        "cherrypy-cors>=1.6",
+        "cherrypy>=18.5.0",
+    ],
     classifiers = [
         "Programming Language :: Python :: 3.7",
         "License :: OSI Approved :: MIT License",
