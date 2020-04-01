@@ -27,6 +27,7 @@ setuptools.setup(
         "sanic_cors>=0.9.8",
         "cherrypy-cors>=1.6",
         "cherrypy>=18.5.0",
+        "psutil>=5.7.0",        
     ],
     classifiers = [
         "Programming Language :: Python :: 3.7",

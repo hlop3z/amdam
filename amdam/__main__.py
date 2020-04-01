@@ -6,7 +6,8 @@ import socket
 import fcntl
 import struct
 import psutil
-from . import api
+#from . import api
+import api
 
 from quart import Quart, websocket, request, render_template, send_from_directory, send_file
 from quart_cors import cors
@@ -70,9 +71,9 @@ if __name__ == '__main__':
     )
     app = cors(
         app,
-        allow_origin=ALLOW_ORIGIN,
+        allow_origin=['*'],
         allow_methods=["GET", "POST"],
-        allow_credentials=True,
+        #allow_credentials=True,
     )
 
     PID  = None
