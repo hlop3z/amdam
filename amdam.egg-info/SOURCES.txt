@@ -6,6 +6,7 @@ amdam/__main__.py
 amdam.egg-info/PKG-INFO
 amdam.egg-info/SOURCES.txt
 amdam.egg-info/dependency_links.txt
+amdam.egg-info/requires.txt
 amdam.egg-info/top_level.txt
 amdam/api/__init__.py
 amdam/api/fullstack.py
