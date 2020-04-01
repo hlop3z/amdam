@@ -2,10 +2,6 @@ import asyncio
 import jinja2
 from pathlib import Path
 
-import socket
-import fcntl
-import struct
-import psutil
 from . import api
 #import api
 
@@ -14,6 +10,12 @@ from quart_cors import cors
 from aiofile import AIOFile, LineReader
 
 if __name__ == '__main__':
+
+    """
+    import socket
+    import fcntl
+    import struct
+    import psutil
 
     def get_ip_address(ifname):
         try:
@@ -30,6 +32,8 @@ if __name__ == '__main__':
         addrs = psutil.net_if_addrs()
         result = map(lambda x: get_ip_address(x), addrs.keys())
         return filter(lambda x: x is not False, result)
+
+    """
 
     ROOT_PATH = Path(__file__).absolute().parent
     APP_PATH = Path(ROOT_PATH).parent
@@ -55,7 +59,7 @@ if __name__ == '__main__':
     args = parser.parse_args()
     if args.port: PORT = args.port
     else        : PORT = 8012
-
+    '''
     ALLOW_ORIGIN = (
         [ f"http://{ ip }:{ PORT }" for ip in get_ips() ]
         +
@@ -63,6 +67,7 @@ if __name__ == '__main__':
         +
         [ f"http://0.0.0.0:8011", f"http://0.0.0.0:{ PORT }" ]
     )
+    '''
 
     app = Quart('test_quart',
         static_url_path = f"/static",
