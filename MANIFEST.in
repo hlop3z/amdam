@@ -1,0 +1,4 @@
+include amdam/coderun/*
+include amdam/logs/*
+include amdam/static/*
+include amdam/templates/*

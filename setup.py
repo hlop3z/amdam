@@ -16,8 +16,9 @@ setuptools.setup(
     description                     = "Fullstack Development",
     long_description                = long_description,
     long_description_content_type   = "text/markdown",
-    url                             = "https://github.com/hlop3z/pgtiny",
+    url                             = "https://github.com/hlop3z/amdam",
     packages                        = setuptools.find_packages(exclude=(".git",)),
+    include_package_data            = True,
     classifiers = [
         "Programming Language :: Python :: 3.7",
         "License :: OSI Approved :: MIT License",
