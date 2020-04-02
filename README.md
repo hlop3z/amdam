@@ -1,8 +1,8 @@
 # Test Fullstack Functions
 
 ## Backend & Frontend Development
-Python with     : Cherrypy, Quart & Sanic (for Linux ONLY)
-Javascript with : Vuejs and Vuetify
+* Python with     : Cherrypy, Quart & Sanic (for Linux ONLY)
+* Javascript with : Vuejs and Vuetify
 
 ### Installing
 
