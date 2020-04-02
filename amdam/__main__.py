@@ -53,9 +53,6 @@ if __name__ == '__main__':
             with open(f'{ ROOT_PATH }/static/settings.js', 'w+') as file:
                 file.write( 'const isLinux = false;' )
 
-    #SETUP
-    set_os()
-
     import argparse
 
     parser = argparse.ArgumentParser(description='Fullstack Development.')
@@ -102,12 +99,9 @@ if __name__ == '__main__':
 
     @app.route("/")
     async def index():
-        templateLoader = jinja2.FileSystemLoader(searchpath=f'{ROOT_PATH}/templates')
-        templateEnv = jinja2.Environment(loader=templateLoader)
-        TEMPLATE_FILE = "index.html"
-        template = templateEnv.get_template(TEMPLATE_FILE)
-        BASE_HTML = template.render()
-        return BASE_HTML
+        #SETUP
+        set_os()
+        return await render_template("index.html")
 
     @app.route('/api/<crud>/<action>', methods=['POST'])
     async def crud_system(crud, action):
