@@ -1,0 +1,15 @@
+include amdam/logs/*
+include amdam/coderun/*
+include amdam/static/*
+include amdam/templates/*
+
+include amdam/coderun/data/*
+include amdam/templates/live_html/*
+
+include amdam/static/plugins/*
+include amdam/static/plugins/ace_editor/*
+include amdam/static/plugins/ace_editor/src-noconflict/*
+include amdam/static/plugins/ace_editor/src-noconflict/snippets/*
+include amdam/static/plugins/material/*
+include amdam/static/plugins/material/css/*
+include amdam/static/plugins/material/fonts/*
