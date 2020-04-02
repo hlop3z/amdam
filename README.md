@@ -2,7 +2,7 @@
 Built with python3.7
 
 ### Original Source
-[Original-Sourc](https://github.com/hlop3z/vicalive/)
+[Original-Source](https://github.com/hlop3z/vicalive/)
 
 ## Backend & Frontend Development
 * Python with     : Cherrypy, Quart & Sanic (for Linux ONLY)
