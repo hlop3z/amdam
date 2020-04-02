@@ -2,8 +2,8 @@ import asyncio
 import jinja2
 from pathlib import Path
 
-from . import api
-#import api
+#from . import api
+import api
 
 from quart import Quart, websocket, request, render_template, send_from_directory, send_file
 from quart_cors import cors
@@ -161,10 +161,9 @@ if __name__ == '__main__':
             file.write( code['scripts'] )
         return {'data':True}
 
-    @app.route('/pylive/view/<action>')
-    async def pylive_view(action):
-        if action == "server": log_path = f"{ ROOT_PATH }/logs/py_log_from_server.txt"
-        else                 : log_path = f"{ ROOT_PATH }/logs/py_log_single_run.txt"
+    @app.route('/pylive/view')
+    async def pylive_view():
+        log_path= f"{ ROOT_PATH }/logs/py_log_from_server.txt"
         payload = ""
         async with AIOFile(log_path, 'r') as asp:
             async for line in LineReader(asp): payload += line
@@ -193,9 +192,15 @@ if __name__ == '__main__':
             SPID = await api.pyll.pylive.server( code )
             return str(SPID)
         elif action == 'live':
+            log_path = f"{ ROOT_PATH }/logs/py_log_single_run.txt"
             if PID: api.pyll.pylive.kill( PID )
             PID = await api.pyll.pylive.run( code )
-            return str(PID)
+            while api.pyll.pylive.isActive(PID):
+                await asyncio.sleep(0.1)
+            await asyncio.sleep(0.25)
+            async with AIOFile(log_path, 'r') as asp:
+                async for line in LineReader(asp): payload += line
+            return payload
         elif action == 'shell':
             log_path = f"{ ROOT_PATH }/logs/sh_log.txt"
             if BPID: api.pyll.pylive.kill( BPID )
