@@ -16,6 +16,11 @@ python -m pip install https://github.com/hlop3z/amdam/raw/master/dist/amdam-0.0.
 python -m amdam
 ```
 
+### Then -> In the Browser
+```
+http://localhost:8012
+```
+
 ### Notes: Linux
 In Linux you can run python, sh and sh-scripts in the browser.
 
