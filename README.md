@@ -1,7 +1,5 @@
 # Fullstack - for testing
 Built with python3.7
-
-### Original Source
 [Original-Source](https://github.com/hlop3z/vicalive/)
 
 ## Backend & Frontend Development
