@@ -117,9 +117,9 @@ if __name__ == '__main__':
         db_path = f"{ ROOT_PATH.absolute() }/coderun/data"
         return db_path
 
-    @app.route('/database/database.db')
+    @app.route('/database/database')
     async def database_path():
-        return await send_from_directory('coderun/data', 'database.db')
+        return await send_from_directory(f'{ ROOT_PATH.absolute() }/coderun/data', 'database.db')
 
     @app.route('/database/import', methods=['POST'])
     async def upload_file():
