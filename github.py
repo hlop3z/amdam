@@ -5,6 +5,9 @@ cmd = lambda x: subprocess.run(x, check=True, shell=True)
 def setup_origin( path="hlop3z/amdam" ):
         cmd(f'git remote add origin git@github.com:{ path }.git')
 
+def setup_origin( path=f"""hlop3z/amdam""" ):
+        cmd(f'git remote set-url origin git@github.com:{ path }.git')
+
 def update( message=None ):
     if not message: message = "update the repository"
     cmd("git add .")
