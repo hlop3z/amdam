@@ -11,7 +11,7 @@ setuptools.setup(
     name                            = "amdam",
     version                         = "0.0.1",
     author                          = "Hector M. Lopez",
-    author_email                    = "hlopez.devops@gmail.com",
+    author_email                    = "fustack@googlegroups.com",
     python_requires                 = '>=3.7',
     description                     = "Fullstack Development",
     long_description                = long_description,
