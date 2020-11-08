@@ -73,7 +73,11 @@ class Application(tk.Frame):
         self.master.destroy()
 
 
-root = tk.Tk()
+def main():
+    root = tk.Tk()
+    gui = Application(master=root)
+    gui.mainloop()
 
-gui = Application(master=root)
-gui.mainloop()
+if __name__ == "__main__":
+    # execute only if run as a script
+    main()
