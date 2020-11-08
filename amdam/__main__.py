@@ -1,225 +1,79 @@
-import asyncio
-import jinja2
-from pathlib import Path
+import tkinter as tk
+from .controller import app
+from multiprocessing import Process
 
-from . import api
-#import api
+import webbrowser
 
-from quart import Quart, websocket, request, render_template, send_from_directory, send_file
-from quart_cors import cors
-from aiofile import AIOFile, LineReader
 
-if __name__ == '__main__':
+def start_server(port=8012):
+    run_app = lambda : app.run(host="0.0.0.0", port=port)
+    run_web = lambda : webbrowser.open_new_tab(f'http://localhost:{ port }/')
+    p = Process( target=run_app )
+    p.start()
+    Process( target=run_web ).start()
+    return p
 
-    """
-    import socket
-    import fcntl
-    import struct
-    import psutil
 
-    def get_ip_address(ifname):
-        try:
-            s = socket.socket(socket.AF_INET, socket.SOCK_DGRAM)
-            return socket.inet_ntoa(fcntl.ioctl(
-                s.fileno(),
-                0x8915,  # SIOCGIFADDR
-                struct.pack('256s', ifname[:15].encode('utf-8'))
-            )[20:24])
-        except Exception as e:
-            return False
+class Application(tk.Frame):
+    def __init__(self, master=None):
+        super().__init__(master)
+        self.master = master
+        self.master.title("Amda-M | By Ablaze")
+        self.master.protocol("WM_DELETE_WINDOW", self.exit_gui)
+        self.master.columnconfigure(0, minsize=250)
+        self.master.rowconfigure([0, 1], minsize=50)
+        self.create_widgets()
 
-    def get_ips():
-        addrs = psutil.net_if_addrs()
-        result = map(lambda x: get_ip_address(x), addrs.keys())
-        return filter(lambda x: x is not False, result)
 
-    """
 
-    ROOT_PATH = Path(__file__).absolute().parent
-    APP_PATH = Path(ROOT_PATH).parent
-    PID = None
+    def create_widgets(self):
+        self.label_status = tk.Label(
+            bg="black",
+            fg="white",
+            text="Enter Port",
+        ).grid(row=0, column=0, columnspan=2, sticky="nsew")
 
-    THE_OS = api.pyll.get_os()
-    if THE_OS == 'windows':
-        asyncio.set_event_loop_policy(
-            asyncio.WindowsProactorEventLoopPolicy()
+        self.entry = tk.Entry()
+        self.entry.grid(row=1, column=0, columnspan=2, sticky="ew")
+        self.entry.insert(0, 8012)
+
+        self.get_port = lambda: int( self.entry.get() )
+
+
+        self.start = tk.Button(
+            text="Start",
+            bg="Green",
+            fg="white",
+            command=self.start_server
         )
+        self.start.grid(row=3, column=0, sticky="e")
 
-    def set_os():
-        if THE_OS == 'linux':
-            with open(f'{ ROOT_PATH }/static/settings.js', 'w+') as file:
-                file.write( 'const isLinux = true;' )
-        else:
-            with open(f'{ ROOT_PATH }/static/settings.js', 'w+') as file:
-                file.write( 'const isLinux = false;' )
-
-    import argparse
-
-    parser = argparse.ArgumentParser(description='Fullstack Development.')
-    parser.add_argument('port', metavar='N', type=int, nargs="?",
-                        help='custom port')
-    args = parser.parse_args()
-    if args.port: PORT = args.port
-    else        : PORT = 8012
-    '''
-    ALLOW_ORIGIN = (
-        [ f"http://{ ip }:{ PORT }" for ip in get_ips() ]
-        +
-        [ f"http://{ ip }:8011" for ip in get_ips() ]
-        +
-        [ f"http://0.0.0.0:8011", f"http://0.0.0.0:{ PORT }" ]
-    )
-    '''
-
-    app = Quart('test_quart',
-        static_url_path = f"/static",
-        static_folder   = f"{ ROOT_PATH }/static",
-        template_folder = f"{ ROOT_PATH }/templates"
-    )
-    app = cors(
-        app,
-        allow_origin=['*'],
-        allow_methods=["GET", "POST"],
-        #allow_credentials=True,
-    )
-
-    PID  = None
-    SPID = None
-    BPID = None
-
-    @app.after_serving
-    async def close_all_subprocess():
-        global PID
-        global SPID
-        global BPID
-        api.pyll.pylive.kill( PID )
-        api.pyll.pylive.kill( SPID )
-        api.pyll.pylive.kill( BPID )
+        self.quit = tk.Button(
+            text="Stop",
+            bg="red",
+            fg="white",
+            command=self.quit_server
+        )
+        self.quit.grid(row=3, column=1, sticky="w")
+        self.quit.config(state="disable")
 
 
-    @app.route("/")
-    async def index():
-        #SETUP
-        set_os()
-        return await render_template("index.html")
+    def start_server(self):
+        self.server = start_server( self.get_port() )
+        self.start.config(state="disable")
+        self.quit.config(state="normal")
 
-    @app.route('/api/<crud>/<action>', methods=['POST'])
-    async def crud_system(crud, action):
-        json_in =  await request.get_json()
-        data = json_in
-        if crud == 'fullstack':
-            return await api.fullstack(action, data)
-        if crud == 'snippet':
-            return await api.snippet(action, data)
+    def quit_server(self):
+        self.server.terminate()
+        self.start.config(state="normal")
+        self.quit.config(state="disable")
 
-    @app.route('/database/export')
-    async def database_path_to_copy():
-        db_path = f"{ ROOT_PATH.absolute() }/coderun/data"
-        return db_path
-
-    @app.route('/database/database')
-    async def database_path():
-        return await send_from_directory(f'{ ROOT_PATH.absolute() }/coderun/data', 'database.db')
-
-    @app.route('/database/import', methods=['POST'])
-    async def upload_file():
-        request_files = await request.files
-        if 'file' in request_files:
-            file = request_files['file']
-            #file.filename
-            data = file.read()
-            with open(f"{ ROOT_PATH }/coderun/data/database.db", "wb") as f:
-                f.write( data )
-            return { "data" : True }
-        else:
-            return "No files"
-
-    @app.route('/html_live/view')
-    async def html_view():
-        templateLoader = jinja2.FileSystemLoader(searchpath=f'{ROOT_PATH}/templates')
-        templateEnv = jinja2.Environment(loader=templateLoader)
-        TEMPLATE_FILE = "live_html/index.html"
-        template = templateEnv.get_template(TEMPLATE_FILE)
-        BASE_HTML = template.render()
-        return BASE_HTML
-
-    @app.route('/html_live/run', methods=['POST'])
-    async def html_run():
-        data =  await request.get_json()
-        code = data['data']
-        with open(f'{ ROOT_PATH }/templates/live_html/head.html', 'w+') as file:
-            file.write( code['head'] )
-        with open(f'{ ROOT_PATH }/templates/live_html/body.html', 'w+') as file:
-            file.write( code['body'] )
-        with open(f'{ ROOT_PATH }/templates/live_html/scripts.html', 'w+') as file:
-            file.write( code['scripts'] )
-        return {'data':True}
-
-    @app.route('/pylive/view')
-    async def pylive_view():
-        log_path= f"{ ROOT_PATH }/logs/py_log_from_server.txt"
-        payload = ""
-        async with AIOFile(log_path, 'r') as asp:
-            async for line in LineReader(asp): payload += line
-        return payload
-
-    @app.route('/pylive/stop/<action>')
-    async def pylive_stop(action):
-        global PID
-        global SPID
-        global BPID
-        if   action == 'shell': api.pyll.pylive.kill( BPID )
-        elif action == 'live' : api.pyll.pylive.kill( PID )
-        else                  : api.pyll.pylive.kill( SPID )
-        return {'data':True}
-
-    @app.route('/pylive/start/<action>', methods=['POST'])
-    async def pylive_run(action):
-        global PID
-        global SPID
-        global BPID
-        data =  await request.get_json()
-        code = data['data']
-        payload = ""
-        if action in ['cherrypy', 'sanic', 'quart']:
-            if SPID : api.pyll.pylive.kill( SPID )
-            SPID = await api.pyll.pylive.server( code )
-            return str(SPID)
-        elif action == 'live':
-            log_path = f"{ ROOT_PATH }/logs/py_log_single_run.txt"
-            if PID: api.pyll.pylive.kill( PID )
-            PID = await api.pyll.pylive.run( code )
-            while api.pyll.pylive.isActive(PID):
-                await asyncio.sleep(0.1)
-            await asyncio.sleep(0.25)
-            async with AIOFile(log_path, 'r') as asp:
-                async for line in LineReader(asp): payload += line
-            return payload
-        elif action == 'shell':
-            log_path = f"{ ROOT_PATH }/logs/sh_log.txt"
-            if BPID: api.pyll.pylive.kill( BPID )
-            BPID = await api.pyll.pylive.cmd( code )
-            while api.pyll.pylive.isActive(BPID):
-                await asyncio.sleep(0.1)
-            await asyncio.sleep(0.25)
-            async with AIOFile(log_path, 'r') as asp:
-                async for line in LineReader(asp): payload += line
-            return payload
-        else:
-            log_path = f"{ ROOT_PATH }/logs/sh_log.txt"
-            cmd_path = f"{ ROOT_PATH }/coderun/run_shell.sh"
-            if BPID: api.pyll.pylive.kill( BPID )
-            with open(cmd_path, 'w+') as file:
-                file.write( code )
-            await asyncio.sleep(0.1)
-            BPID = await api.pyll.pylive.cmd( f'sh { cmd_path }')
-            while api.pyll.pylive.isActive(BPID):
-                await asyncio.sleep(0.1)
-            await asyncio.sleep(0.25)
-            async with AIOFile(log_path, 'r') as asp:
-                async for line in LineReader(asp): payload += line
-            return payload
-            return ''
+    def exit_gui(self):
+        self.quit_server()
+        self.master.destroy()
 
 
-    app.run(host="0.0.0.0", port=PORT)
+root = tk.Tk()
+
+gui = Application(master=root)
+gui.mainloop()

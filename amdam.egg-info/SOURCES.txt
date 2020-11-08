@@ -3,6 +3,7 @@ README.md
 setup.py
 amdam/__init__.py
 amdam/__main__.py
+amdam/controller.py
 amdam.egg-info/PKG-INFO
 amdam.egg-info/SOURCES.txt
 amdam.egg-info/dependency_links.txt
