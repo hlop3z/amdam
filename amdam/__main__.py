@@ -69,7 +69,8 @@ class Application(tk.Frame):
         self.quit.config(state="disable")
 
     def exit_gui(self):
-        self.quit_server()
+        try   : self.quit_server()
+        except: pass
         self.master.destroy()
 
 
