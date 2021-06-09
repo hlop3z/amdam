@@ -1,4 +1,4 @@
-# Fullstack - for testing
+# Fullstack - Fast
 Built with python3.7
 
 [Original-Source](https://github.com/hlop3z/vicalive/)
