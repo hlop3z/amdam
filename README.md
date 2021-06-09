@@ -4,7 +4,7 @@ Built with python3.7
 [Original-Source](https://github.com/hlop3z/vicalive/)
 
 ## Backend & Frontend Development
-* Python with     : Cherrypy, Quart & Sanic (for Linux ONLY)
+* Python with     : Cherrypy, Quart & Sanic (Sanic works ONLY with Linux)
 * Javascript with : Vuejs and Vuetify
 
 ### Installing
